@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+exec</dev/tty
+ol=$(stty -g)
+stty raw -echo min 0
+echo -en "\033[6n">/dev/tty
+IFS=';' read -r -d R -a pos
+stty $ol
+row=$((${pos[0]:2}-1))      # strip off the escape garbage
+col=$((${pos[1]}-1))
+echo -ne $row
