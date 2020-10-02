@@ -122,7 +122,7 @@ func main() {
 	flag.BoolVar(&help, "h", false, "Help message")
 	flag.Parse()
 	if help {
-		fmt.Printf("%spipes%s 1.5.0\n"+
+		fmt.Printf("%spipes%s 1.5.1\n"+
 			"Llathasa Veleth <llathasa@outlook.com>\nPipe generator.\n\n"+
 			"%sUSAGE:%s\n"+
 			"\tpipes [FLAGS] [OPTIONS]\n\n"+
@@ -179,7 +179,9 @@ func main() {
 			[]string{"-", "\\", "/"},
 		}
 	}
-	cmd := exec.Command("./getpos") // gets current cursor position (rows)
+	cmd := exec.Command("sh", // gets current cursor position (rows)
+		"-c",
+		"exec</dev/tty;ol=$(stty -g);stty raw -echo min 0;echo -en '\033[6n'>/dev/tty;IFS=';' read -r -d R -a pos;stty $ol;row=$((${pos[0]:2}-1));col=$((${pos[1]}-1));echo -ne $row")
 	cmd.Stdin = os.Stdin
 	savePos, err := cmd.Output()
 	if err != nil {
