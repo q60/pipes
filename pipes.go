@@ -15,35 +15,6 @@ import (
 	"time"
 )
 
-const (
-	left = iota
-	right
-	down
-	up
-)
-const (
-	reset   = "\x1B[0m"
-	red     = "\x1B[31m"
-	green   = "\x1B[32m"
-	yellow  = "\x1B[33m"
-	blue    = "\x1B[34m"
-	magenta = "\x1B[35m"
-	cyan    = "\x1B[36m"
-)
-
-type pipesStruct struct {
-	Init  []string
-	Down  []string
-	Up    []string
-	Left  []string
-	Right []string
-}
-
-type dimensions struct {
-	X int
-	Y int
-}
-
 // Prints out to x:y colored with c
 func out(x int, y int, c string, out string) {
 	fmt.Printf("\x1B[%d;%dH%s\x1B[1m%s\x1B[0m", y, x, c, out)
@@ -84,45 +55,76 @@ func choice(slice interface{}) (element interface{}) {
 	return
 }
 
+type pipesStruct struct {
+	Init  []string
+	Down  []string
+	Up    []string
+	Left  []string
+	Right []string
+}
+
+type dimensions struct {
+	X int
+	Y int
+}
+
+const (
+	left = iota
+	right
+	down
+	up
+)
+
+const (
+	reset   = "\x1B[0m"
+	red     = "\x1B[31m"
+	green   = "\x1B[32m"
+	yellow  = "\x1B[33m"
+	blue    = "\x1B[34m"
+	magenta = "\x1B[35m"
+	cyan    = "\x1B[36m"
+)
+
+var (
+	pipes = pipesStruct{
+		[]string{"┃", "━"},
+		[]string{"┃", "┛", "┗"},
+		[]string{"┃", "┓", "┏"},
+		[]string{"━", "┏", "┗"},
+		[]string{"━", "┓", "┛"},
+	}
+	colors = [7]string{
+		red,
+		green,
+		yellow,
+		blue,
+		magenta,
+		cyan,
+		reset,
+	}
+	direction      int
+	pipe           string
+	cords          dimensions
+	term           dimensions
+	resolution     []string
+	entryPoint     string
+	pipeColor      string
+	startX, startY int
+	maxPipes       int
+	counter        int
+	chance         int
+	help           bool
+	style          string
+)
+
 func main() {
-	var (
-		pipes = pipesStruct{
-			[]string{"┃", "━"},
-			[]string{"┃", "┛", "┗"},
-			[]string{"┃", "┓", "┏"},
-			[]string{"━", "┏", "┗"},
-			[]string{"━", "┓", "┛"},
-		}
-		colors = [7]string{
-			red,
-			green,
-			yellow,
-			blue,
-			magenta,
-			cyan,
-			reset,
-		}
-		direction      int
-		pipe           string
-		cords          dimensions
-		term           dimensions
-		resolution     []string
-		entryPoint     string
-		pipeColor      string
-		startX, startY int
-		maxPipes       int
-		counter        int
-		chance         int
-		help           bool
-		style          string
-	)
 	flag.StringVar(&style, "style", "pipe", "Pipes style")
 	flag.StringVar(&style, "s", "pipe", "Pipes style")
 	flag.BoolVar(&help, "help", false, "Help message")
 	flag.BoolVar(&help, "h", false, "Help message")
 	flag.Parse()
 	if help {
-		fmt.Printf("%spipes%s 1.5.1\n"+
+		fmt.Printf("%spipes%s 1.5.2\n"+
 			"Llathasa Veleth <llathasa@outlook.com>\nPipe generator.\n\n"+
 			"%sUSAGE:%s\n"+
 			"\tpipes [FLAGS] [OPTIONS]\n\n"+
@@ -181,7 +183,14 @@ func main() {
 	}
 	cmd := exec.Command("sh", // gets current cursor position (rows)
 		"-c",
-		"exec</dev/tty;ol=$(stty -g);stty raw -echo min 0;echo -en '\033[6n'>/dev/tty;IFS=';' read -r -d R -a pos;stty $ol;row=$((${pos[0]:2}-1));col=$((${pos[1]}-1));echo -ne $row")
+		`exec</dev/tty;ol=$(stty -g); \
+    stty raw -echo min 0; \
+    echo -en '\033[6n'>/dev/tty; \
+    IFS=';' read -r -d R -a pos; \
+    stty $ol; \
+    row=$((${pos[0]:2}-1)); \
+    col=$((${pos[1]}-1)); \
+    echo -ne $row`)
 	cmd.Stdin = os.Stdin
 	savePos, err := cmd.Output()
 	if err != nil {
