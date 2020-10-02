@@ -183,7 +183,8 @@ func main() {
 	}
 	cmd := exec.Command("sh", // gets current cursor position (rows)
 		"-c",
-		`exec</dev/tty;ol=$(stty -g); \
+		`exec</dev/tty; \
+    ol=$(stty -g); \
     stty raw -echo min 0; \
     echo -en '\033[6n'>/dev/tty; \
     IFS=';' read -r -d R -a pos; \
