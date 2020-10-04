@@ -26,16 +26,26 @@ script:
   - go vet $(go list ./... | grep -v /vendor/)
   - go test -v -race ./...
   # Only build binaries from the latest Go release.
-  - if [ "${LATEST}" = "true" ]; then gox -os="linux darwin windows" -arch="amd64" -output="pipes.." -ldflags "-X main.Rev=`git rev-parse --short HEAD`" -verbose ./...; fi
+  - if [ "${LATEST}" = "true" ]; then gox -os="linux windows" -ldflags "-X main.Rev=`git rev-parse --short HEAD`" -verbose ./...; fi
 
 deploy:
   provider: releases
   api_key:
     secure: MNTusDDzlir1FobK+H41Ov+JASSFP12eD/KsfBHoNuk4IkuPmt5LkGHMNMe6KsMLVFenkBpxTcRnHt++5pswjRFqjDjbwvCXZLbi/BPI2RuYKokw1+Dy25/tsXGpS+v3zB7TjF/9sgRPzBF6F0y2QgDFSyuR/Lj++UF7GR0NAnRltKZvPDNq9XfrN/DCQmEdTplR5ubFBabRMIvC3Pt973jvcNH1gso/CW3j9b8hdnyeFxD3SAIWOxSGstfq4Lg2YKzes41A6R9BAYy3opdI2PzaPComH1kw0jUGGxFC8IkBnmth/GQnJinINV7tMIYPLWDM1Zr61hRq6HQidOdqOAu1idXtpcy1wbvrcgtwCRZRcvEng+T0W9e7JEVd6+FFQHDOzrBOjZ+A2ufOQjLElsMnUoKp1b2pZDvesXqFUYrBQQlJWj3dbFxXxjJo5AXg+KnTOSmsIh/DT7smLkp7g5o0nXWejgjKx8Tdvaz4KdboFnFuW93QIg81x1Jg9Ss7EDPIzSoFpuXC07hEHdbRtJcSedmk8MAltSpO5lB1Hcp4lMcMLXgM0aU4zuhq0xh8KPsS0dR5CjnyGsqQHMpKug7O9CBe30zNPRa4WFCOObXJt5hLeyTzHQeqy+kf2qCPn5oiArhtMLSeaAXBpLSydLBW6AHcc+7x05ZA/lXQdtQ=
   file:
-    - pipes.windows.amd64.exe
-    - pipes.darwin.amd64
-    - pipes.linux.amd64
+    - pipes_linux_386
+    - pipes_linux_amd64
+    - pipes_linux_arm
+    - pipes_linux_arm64
+    - pipes_linux_mips
+    - pipes_linux_mips64
+    - pipes_linux_mips64le
+    - pipes_linux_mipsle
+    - pipes_linux_ppc64
+    - pipes_linux_ppc64le
+    - pipes_linux_s390x
+    - pipes_windows_386.exe
+    - pipes_windows_amd64.exe
   on:
     repo: llathasa-veleth/pipes
     branch: main
