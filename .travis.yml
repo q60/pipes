@@ -51,7 +51,7 @@ deploy:
     branch: main
     tags: true
     condition: $LATEST = true
-    skip_cleanup: true
+  skip_cleanup: true
 branches:
   only:
     - /\d+\.\d+\.\d+/
