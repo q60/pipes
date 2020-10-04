@@ -36,7 +36,10 @@ go build
 
 ### Running
 
+You can grab latest binaries from [releases](https://github.com/llathasa-veleth/pipes/releases).
+
 ```sh
+chmod +x pipes
 pipes --help  # seek for help
 pipes         # run with default style
 pipes -s thin # run with <thin> style
@@ -47,3 +50,4 @@ pipes -s thin # run with <thin> style
 - Makefile
 - More options/flags
 - Releases
+- Windows support
