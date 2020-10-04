@@ -42,3 +42,6 @@ deploy:
     tags: true
     condition: $LATEST = true
     # skip_cleanup: 'true'
+branches:
+  only:
+    - /\d+\.\d+\.\d+/
