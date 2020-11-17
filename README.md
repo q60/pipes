@@ -49,5 +49,5 @@ pipes -s thin # run with <thin> style
 
 - Makefile
 - More options/flags
-- Releases
+- ~~Releases~~
 - Windows support
